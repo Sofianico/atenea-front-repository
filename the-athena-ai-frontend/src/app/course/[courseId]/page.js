@@ -12,7 +12,15 @@ export default function CoursePage() {
       fetch(`http://localhost:3001/api/courses/${courseId}`)
         .then(res => res.json())
         .then(data => setCourse(data))
-        .catch(err => console.error('Error al obtener curso:', err));
+        .catch(err => {
+          console.error('Error al obtener curso:', err);
+          // fallback simulado
+          setCourse({
+            title: 'Curso de prueba',
+            description: 'Este es un curso simulado porque el backend no respondió.',
+            lessons: ['Intro', 'Temario', 'Ejercicios'],
+          });
+        });
     }
   }, [courseId]);
 
@@ -24,7 +32,7 @@ export default function CoursePage() {
       <p>{course.description}</p>
       <h2>Lecciones:</h2>
       <ul>
-        {course.lessons.map((lesson, idx) => (
+        {(course.lessons || []).map((lesson, idx) => (
           <li key={idx}>{lesson}</li>
         ))}
       </ul>
