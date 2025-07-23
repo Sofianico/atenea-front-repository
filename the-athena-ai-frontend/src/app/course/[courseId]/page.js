@@ -6,6 +6,7 @@ import { useParams } from 'next/navigation';
 export default function CoursePage() {
   const { courseId } = useParams();
   const [course, setCourse] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (courseId) {
@@ -14,17 +15,13 @@ export default function CoursePage() {
         .then(data => setCourse(data))
         .catch(err => {
           console.error('Error al obtener curso:', err);
-          // fallback simulado
-          setCourse({
-            title: 'Curso de prueba',
-            description: 'Este es un curso simulado porque el backend no respondió.',
-            lessons: ['Intro', 'Temario', 'Ejercicios'],
-          });
-        });
+        })
+        .finally(() => setLoading(false));
     }
   }, [courseId]);
 
-  if (!course) return <p>Cargando curso...</p>;
+  if (loading) return <p>Cargando...</p>;
+  if (!course) return <p>No se encontró el curso</p>;
 
   return (
     <div style={{ padding: '2rem' }}>
